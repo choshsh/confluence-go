@@ -2,26 +2,10 @@ package confluence
 
 import (
 	goconfluence "github.com/virtomize/confluence-go-api"
-	"strconv"
 )
 
 func (c *confluence) CreateContent() *goconfluence.Content {
-	content := &goconfluence.Content{
-		Title: "api-test-02",
-		Type:  "page",
-		Body: goconfluence.Body{
-			Storage: goconfluence.Storage{
-				Value:          "#api-test\nnew sub\npage", // your page content here
-				Representation: "editor2",
-			},
-		},
-		Ancestors: []goconfluence.Ancestor{
-			goconfluence.Ancestor{
-				ID: "1015809",
-			},
-		},
-		Space: goconfluence.Space{Key: "~166200948"},
-	}
+	content := c.newContent("1015809", "", 0)
 
 	content, err := c.client.CreateContent(content)
 	errHandler(err)
@@ -30,28 +14,38 @@ func (c *confluence) CreateContent() *goconfluence.Content {
 }
 
 func (c *confluence) UpdateContent(contentSearch goconfluence.Content) *goconfluence.Content {
+	content := c.newContent("1015809", contentSearch.ID, contentSearch.Version.Number)
+
+	content, err := c.client.UpdateContent(content)
+	errHandler(err)
+	return content
+}
+
+func (c confluence) newContent(ancestorId string, contentId string, version int) *goconfluence.Content {
 	content := &goconfluence.Content{
 		Title: "api-test-02",
 		Type:  "page",
-		ID:    contentSearch.ID,
 		Body: goconfluence.Body{
 			Storage: goconfluence.Storage{
-				Value:          "#api-test\nnew sub\npage" + strconv.Itoa(contentSearch.Version.Number+1),
+				Value:          NewTemplate(),
 				Representation: "editor2",
 			},
 		},
 		Ancestors: []goconfluence.Ancestor{
 			goconfluence.Ancestor{
-				ID: "1015809",
+				ID: ancestorId,
 			},
 		},
-		Version: &goconfluence.Version{
-			Number: contentSearch.Version.Number + 1,
-		},
-		Space: goconfluence.Space{Key: "~166200948"},
+		Space: goconfluence.Space{Key: spaceId},
+	}
+	if len(contentId) > 0 {
+		content.ID = contentId
+	}
+	if version > 0 {
+		content.Version = &goconfluence.Version{
+			Number: version + 1,
+		}
 	}
 
-	content, err := c.client.UpdateContent(content)
-	errHandler(err)
 	return content
 }

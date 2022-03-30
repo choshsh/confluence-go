@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-var cf = NewConfluence("https://co-jesh.atlassian.net/wiki/rest/api", "cho911115@gmail.com", os.Getenv("TOKEN"))
+var cf = NewConfluence("https://co-jesh.atlassian.net", "cho911115@gmail.com", os.Getenv("TOKEN"))
 
 func TestSpaces(t *testing.T) {
 	spaces, err := cf.client.GetAllSpaces(goconfluence.AllSpacesQuery{})
