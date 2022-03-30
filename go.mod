@@ -4,7 +4,6 @@ go 1.18
 
 require (
 	github.com/choshsh/wrike-go v0.0.0-20220322135508-cbf6cb1b626d
-	github.com/joho/godotenv v1.4.0
 	github.com/stretchr/testify v1.7.1
 	github.com/virtomize/confluence-go-api v1.3.0
 )
